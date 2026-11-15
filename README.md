@@ -2,6 +2,8 @@
 
 A time-based ERC-20 staking dApp built with **Solidity 0.8.20 + Hardhat + OpenZeppelin 5.6.1**, deployable to the **Ethereum Sepolia** testnet.
 
+**Repository:** https://github.com/wangziyan2006-cmd/defi-staking-project
+
 **Team:** CDS528 Group (Lingnan University) · **Course:** CDS528 Blockchain DeFi Smart Contract Development
 
 | Item | Status |
@@ -91,13 +93,21 @@ defi-staking-project/
 │   ├── MockToken.sol            # ERC-20 test token, 1,000,000 initial supply
 │   └── DeFiStaking.sol          # staking core: accrual, guards, pause, events
 ├── scripts/
-│   └── deploy.js                # one-command deploy + reward pool funding + preflight checks
+│   ├── deploy.js                # one-command deploy + reward pool funding + preflight checks
+│   ├── demo.js                  # full lifecycle (stake → claim → withdraw) on Sepolia
+│   └── verify-sourcify-v2.js    # source verification against the Sourcify v2 API
 ├── test/
 │   └── DeFiStaking.test.js      # 16 unit tests
+├── frontend/
+│   ├── index.html               # no-build console: read state, sign via MetaMask
+│   ├── app.js                   # ethers UMD + explicit gas limits (see §5.2)
+│   ├── ethers.umd.min.js        # vendored ethers build, so the page works offline
+│   └── README.md
 ├── security/
 │   ├── slither-report.txt       # raw Slither output (R4 evidence)
 │   └── SECURITY.md              # threat model & mitigations (R4)
 ├── flattened/                   # single-file / standard-json sources for manual verification
+├── deployments/sepolia.json     # addresses, constructor args, verification status, demo tx hashes
 ├── hardhat.config.js
 ├── .env.example                 # copy to .env and fill in
 ├── LICENSE                      # MIT
@@ -331,13 +341,15 @@ Both contracts are non-upgradeable. Rationale: the assignment scope does not jus
 
 ## 10. Roles
 
-| Role | Member |
-|---|---|
-| Group Project Lead | _TBD_ |
-| Smart Contract Lead | _TBD_ |
-| Backend / Integration | _TBD_ |
-| Testing & Security Analyst | _TBD_ |
-| Front-end / UX (optional) | _TBD_ |
+This submission is an **individual** project, not a multi-member group: one author carried every role. The table records what each role actually produced, so the split of work is auditable rather than nominal.
+
+| Role | Member | Delivered |
+|---|---|---|
+| Group Project Lead | cosmos wang ([@wangziyan2006-cmd](https://github.com/wangziyan2006-cmd)) | Scope against the rubric, report, 12-minute deck, submission |
+| Smart Contract Lead | same | `contracts/DeFiStaking.sol`, `contracts/MockToken.sol`, reward-accrual design |
+| Backend / Integration | same | `scripts/deploy.js`, `scripts/demo.js`, `scripts/verify-sourcify-v2.js`, `deployments/sepolia.json` |
+| Testing & Security Analyst | same | `test/DeFiStaking.test.js` (16 tests), Slither run, `security/SECURITY.md`, threat model |
+| Front-end / UX | same | `frontend/index.html`, `frontend/app.js` (no-build MetaMask console) |
 
 ---
 
