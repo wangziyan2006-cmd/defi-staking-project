@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>DeFiStaking · Sepolia console</title>
+<style>
+  :root {
+    --ink: #1e191c;
+    --muted: #6b6266;
+    --line: #ddd6d8;
+    --paper: #fdfcfc;
+    --accent: #7a202c;
+    --accent-soft: #f4e9ea;
+    --mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font: 15px/1.55 "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  }
+  header {
+    border-bottom: 1px solid var(--line); padding: 28px 40px 20px;
+    display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap;
+  }
+  h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  h1 span { color: var(--accent); }
+  .sub { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
+  main { max-width: 1080px; margin: 0 auto; padding: 28px 40px 64px; }
+  .grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: 28px; align-items: start; }
+  @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } header { padding: 20px; } main { padding: 20px; } }
+  section { border: 1px solid var(--line); border-radius: 10px; padding: 20px; background: #fff; }
+  section > h2 {
+    margin: 0 0 16px; font-size: 13px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.09em; color: var(--accent);
+  }
+  dl { display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; margin: 0; }
+  dt { color: var(--muted); font-size: 13px; }
+  dd { margin: 0; font-family: var(--mono); font-size: 14px; text-align: right; word-break: break-all; }
+  .row { display: flex; gap: 10px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+  input[type="text"] {
+    flex: 1 1 140px; min-width: 120px; padding: 9px 11px; font-family: var(--mono); font-size: 13px;
+    border: 1px solid var(--line); border-radius: 7px; background: #fff; color: var(--ink);
+  }
+  input:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
+  button {
+    padding: 9px 16px; border-radius: 7px; border: 1px solid var(--accent);
+    background: var(--accent); color: #fff; font-size: 13.5px; cursor: pointer;
+  button:hover:not(:disabled) { background: #651a24; }
+  button.ghost { background: #fff; color: var(--accent); }
+  button.ghost:hover:not(:disabled) { background: var(--accent-soft); }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .hint { font-size: 12px; color: var(--muted); margin: 0 0 14px; }
+  #log {
+    margin: 0; padding: 14px 16px; min-height: 120px; max-height: 260px; overflow: auto;
+    background: #faf8f8; border: 1px solid var(--line); border-radius: 8px;
+    font-family: var(--mono); font-size: 12.5px; white-space: pre-wrap; color: var(--ink);
+  }
+  .badge {
+    display: inline-block; padding: 2px 9px; border-radius: 999px; font-size: 11.5px;
+    letter-spacing: 0.04em; border: 1px solid var(--line); color: var(--muted); background: #faf8f8;
+  }
+  .badge.ok { border-color: #b6d3bd; color: #2c6b3f; background: #eff7f1; }
+  .badge.bad { border-color: #e0b3b8; color: var(--accent); background: var(--accent-soft); }
+  footer { max-width: 1080px; margin: 0 auto; padding: 0 40px 40px; color: var(--muted); font-size: 12px; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>DeFiStaking <span>· Sepolia console</span></h1>
+    <p class="sub">Read state and drive the live contract. Everything happens on chain; this page holds no keys.</p>
+  </div>
+  <div class="row" style="margin:0">
+    <span class="badge" id="chain-badge">wallet not connected</span>
+    <button id="connect">Connect wallet</button>
+  </div>
+</header>
+
+<main>
+  <div class="grid">
+    <section>
+      <h2>Your position</h2>
+      <dl>
+        <dt>Wallet</dt><dd id="wallet">—</dd>
+        <dt>MTK balance</dt><dd id="balance">—</dd>
+        <dt>Staked</dt><dd id="staked">—</dd>
+        <dt>Earned (live)</dt><dd id="earned">—</dd>
+        <dt>Claimable pending</dt><dd id="pending">—</dd>
+      </dl>
+    </section>
+
+    <section>
+      <h2>Pool</h2>
+      <dl>
+        <dt>Total staked</dt><dd id="total-staked">—</dd>
+        <dt>Reward rate</dt><dd id="rate">—</dd>
+        <dt>Reward pool MTK</dt><dd id="pool">—</dd>
+        <dt>Paused</dt><dd id="paused">—</dd>
+        <dt>Contracts</dt><dd id="addrs" style="font-size:11.5px">—</dd>
+      </dl>
+    </section>
+  </div>
+
+  <section style="margin-top:28px">
+    <h2>Actions</h2>
+    <p class="hint">Amount is in MTK. The first stake on a fresh wallet sends <code>approve</code> first, then <code>stake</code>.</p>
+    <div class="row">
+      <input type="text" id="amount" value="100" inputmode="decimal" />
+      <button id="stake">Approve + stake</button>
+      <button class="ghost" id="claim">Claim reward</button>
+      <button class="ghost" id="withdraw">Withdraw</button>
+      <button class="ghost" id="refresh">Refresh</button>
+    </div>
+  </section>
+
+  <section style="margin-top:28px">
+    <h2>Activity</h2>
+    <pre id="log">Not connected yet.</pre>
+  </section>
+</main>
+
+<footer>
+  Deployed on Sepolia (chain id 11155111) · CDS528 group project · verify any transaction hash on a Sepolia block explorer.
+</footer>
+
+<script src="./ethers.umd.min.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>

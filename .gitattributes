@@ -1,0 +1,11 @@
+# Keep line endings stable so the Solidity sources hash-match the verified
+# bytecode on Sourcify regardless of which OS clones the repository.
+* text=auto eol=lf
+
+*.sol text eol=lf
+*.js   text eol=lf
+*.json text eol=lf
+*.md   text eol=lf
+
+# Vendored browser build of ethers: binary-ish minified blob, leave it alone.
+frontend/ethers.umd.min.js -text -diff

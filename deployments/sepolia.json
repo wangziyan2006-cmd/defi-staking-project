@@ -1,0 +1,51 @@
+{
+  "network": "sepolia",
+  "chainId": 11155111,
+  "deployedAt": "2026-11-16",
+  "deployer": "0xfcaFDDf94BAafF9598Cc67F650da383Fc49DC916",
+  "blockNumber": 12141741,
+  "contracts": {
+    "MockToken": {
+      "address": "0x68b78097aa78e0E5f444BbE43E8E904822c0b6d5",
+      "constructorArgs": ["Mock Token", "MTK"],
+      "sourcify": "exact_match",
+      "sourcifyUrl": "https://repo.sourcify.dev/11155111/0x68b78097aa78e0E5f444BbE43E8E904822c0b6d5"
+    },
+    "DeFiStaking": {
+      "address": "0x988398cF9453F855471f6dAfE706C344741eD2D3",
+      "constructorArgs": [
+        "0x68b78097aa78e0E5f444BbE43E8E904822c0b6d5",
+        "0x68b78097aa78e0E5f444BbE43E8E904822c0b6d5"
+      ],
+      "rewardPoolFunded": "10000 MTK",
+      "rewardRatePerSecond": "10000000000",
+      "sourcify": "match",
+      "sourcifyUrl": "https://repo.sourcify.dev/11155111/0x988398cF9453F855471f6dAfE706C344741eD2D3"
+    }
+  },
+  "postDeployReadback": {
+    "MockToken.totalSupply": "1000000 MTK",
+    "MockToken.balanceOf(DeFiStaking)": "10000 MTK",
+    "DeFiStaking.totalStaked": "0 MTK",
+    "DeFiStaking.rewardRatePerSecond": "1e10",
+    "DeFiStaking.owner": "0xfcaFDDf94BAafF9598Cc67F650da383Fc49DC916",
+    "DeFiStaking.paused": false
+  },
+  "demoCycle": {
+    "date": "2026-11-16",
+    "amount": "100 MTK",
+    "rewardClaimed": "0.000192 MTK",
+    "txs": {
+      "approve": "0xc1791d04dc91e58efb474dbdfbce3d23dc37e42fb2f0d7cc69f9a6b945b1cb07",
+      "stake": "0xceb2aa21bf2b61585cff803a379cd5da6c331242b704261a41197ad45cb9d8ed",
+      "claimReward": "0xd94f0584d00c9f8970986c83b5c62f3131bf333de3e1a6c15d1c523beedf1756",
+      "withdraw": "0x39c723a8327f1a1b4e139f54bde8fa838ed012caaa02b5685c28f11f17452d39"
+    }
+  },
+  "notes": [
+    "Compiler: solc 0.8.20+commit.a1b79de6, optimizer enabled, 200 runs, evm target paris.",
+    "Verified through Sourcify API v2 because hardhat-verify 2.1.x still calls the retired v1 endpoints.",
+    "No Etherscan API key was used; Sourcify serves as the independent verifier.",
+    "eth_estimateGas under-reports withdraw on this RPC (94k-113k returned vs 176,873 consumed); scripts send an explicit gas limit."
+  ]
+}
